@@ -180,7 +180,7 @@ class OutlookWebScraper():
 		logger.debug(locals())
 		if not refresh: # look in the cache
 			message_urls = find_in_cache(folder_name=folder_name)
-			if message_urls != False:
+			if message_urls:
 				return message_urls
 		# if not found or not used, proceed
 		if not self.is_logged_in: 
@@ -194,7 +194,7 @@ class OutlookWebScraper():
 		else:
 			last_message_urls = message_urls # if you ask for an out-of-range page, you get the last page
 			flag = True
-			while flag == True: # page through the folder, testing to see if we've got the last one yet
+			while flag: # page through the folder, testing to see if we've got the last one yet
 				next_url = [link.url for link in self.browser.links() if 'Next Page' in link.text][0]	
 				self.browser.open(next_url) #find and use next page url
 				murls = [link.url for link in self.browser.links() if '.EML' in link.url] #extract data
@@ -209,7 +209,7 @@ class OutlookWebScraper():
 		"Returns the raw e-mail for the given message ID."
 		logger.debug(locals())
 		payload = find_in_cache(msgid=msgid) #check the cache
-		if payload not False:
+		if payload:
 			return payload
 		if not self.is_logged_in:
 			self.login()
