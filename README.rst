@@ -9,7 +9,7 @@ Stuck with Microsoft Outlook for work e-mail? Want access to your raw e-mail mes
 `weboutlook` is a Python module that retrieves full, raw e-mails from Microsoft Outlook Web Access by screen scraping. It can do the following:
 
 Log into a Microsoft Outlook Web Access account with a given username and password.
-Retrieve all e-mail IDs from the first page of your Inbox.
+Retrieve all e-mail IDs from any given folder.
 Retrieve the full, raw source of the e-mail with a given ID.
 Delete an e-mail with a given ID (technically, move it to the 'Deleted Items' folder).
 Documentation / sample usage::
