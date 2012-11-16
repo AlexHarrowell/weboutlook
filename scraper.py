@@ -195,8 +195,15 @@ class OutlookWebScraper():
 			last_message_urls = message_urls # if you ask for an out-of-range page, you get the last page
 			flag = True
 			while flag: # page through the folder, testing to see if we've got the last one yet
-				next_url = [link.url for link in self.browser.links() if 'Next Page' in link.text][0]	
-				self.browser.open(next_url) #find and use next page url
+				next_url = [link.url for link in self.browser.links() if 'Next Page' in link.text][0]
+				try:	
+					self.browser.open(next_url) #find and use next page url
+				except urllib2.URLError:
+					if len(message_urls) > 0:
+						add_to_cache(folder_name=folder_name, message_urls=message_urls)
+						return message_urls
+					else:
+						raise RetrievalError, "Couldn't open the inbox, probably due to a timeout"
 				murls = [link.url for link in self.browser.links() if '.EML' in link.url] #extract data
 				if murls == last_message_urls:
 					flag = False # check to see if identical with the last one
@@ -225,8 +232,9 @@ class OutlookWebScraper():
 		logger.debug(locals())
 		if not self.is_logged_in: 
 			self.login()
-		delete = self.browser.open(self.base_href + msgid, urllib.urlencode({
-		    'MsgId': msgid,
+		m = msgid.replace('Cmd=open', '')
+		delete self.browser.open(self.base_href + m + urllib.urlencode({
+		    'MsgId': m,
 		    'Cmd': 'delete',
 		    'ReadForm': '1',   
 		 }))
